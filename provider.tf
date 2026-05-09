@@ -5,14 +5,11 @@ terraform {
       version = "~> 6.0"
     }
   }
+  backend "local" {
+    
+  }
 }
 
 provider "aws" {
   region = "eu-west-2"
-}
-
-# CloudFront ACM certificates must be issued in us-east-1
-provider "aws" {
-  alias  = "us_east_1"
-  region = "us-east-1"
 }

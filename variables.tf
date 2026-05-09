@@ -1,4 +1,10 @@
 variable "domain_name" {
-  description = "The apex domain name for the site (e.g. example.com). A Route53 hosted zone must already exist for this domain."
-  type        = string
+  type = string
+  description = "the domain name of your hosted zone in aws"
+}
+
+variable "bucket_name" {
+  type = string
+  description = "the bucket name should match domain"
+  default = var.domain_name
 }
