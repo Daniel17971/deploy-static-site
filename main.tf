@@ -1,6 +1,5 @@
 resource "aws_s3_bucket" "website_bucket" {
-  bucket = var.bucket_name
-  bucket_namespace = "account-regional"
+  bucket = var.domain_name
 }
 
 resource "aws_s3_bucket_website_configuration" "website_bucket_config" {
