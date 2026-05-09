@@ -6,5 +6,4 @@ variable "domain_name" {
 variable "site_dist_path" {
   type        = string
   description = "Path to the built static site directory to upload to S3"
-  default     = "../frontend/app/out"
 }
