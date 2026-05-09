@@ -9,8 +9,8 @@ resource "aws_route53_record" "apex" {
   type    = "A"
 
   alias {
-    name                   = aws_s3_bucket_website_configuration.website_bucket_config.website_domain
-    zone_id                = aws_s3_bucket.website_bucket.hosted_zone_id
-    evaluate_target_health = true
+    name                   = aws_cloudfront_distribution.site.domain_name
+    zone_id                = aws_cloudfront_distribution.site.hosted_zone_id
+    evaluate_target_health = false
   }
 }

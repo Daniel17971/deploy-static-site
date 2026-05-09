@@ -2,37 +2,39 @@ resource "aws_s3_bucket" "website_bucket" {
   bucket = var.domain_name
 }
 
-resource "aws_s3_bucket_website_configuration" "website_bucket_config" {
-  bucket = aws_s3_bucket.website_bucket.id
-
-    index_document {
-    suffix = "index.html"
-  }
-}
 resource "aws_s3_bucket_public_access_block" "public_access" {
   bucket = aws_s3_bucket.website_bucket.id
 
-  block_public_acls       = false
-  block_public_policy     = false
-  ignore_public_acls      = false
-  restrict_public_buckets = false
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
 }
 
-resource "aws_s3_bucket_policy" "public_read" {
+data "aws_iam_policy_document" "cloudfront_read" {
+  statement {
+    sid    = "AllowCloudFrontServicePrincipalRead"
+    effect = "Allow"
+
+    principals {
+      type        = "Service"
+      identifiers = ["cloudfront.amazonaws.com"]
+    }
+
+    actions   = ["s3:GetObject"]
+    resources = ["${aws_s3_bucket.website_bucket.arn}/*"]
+
+    condition {
+      test     = "StringEquals"
+      variable = "AWS:SourceArn"
+      values   = [aws_cloudfront_distribution.site.arn]
+    }
+  }
+}
+
+resource "aws_s3_bucket_policy" "cloudfront_read" {
   bucket = aws_s3_bucket.website_bucket.id
-
-  depends_on = [aws_s3_bucket_public_access_block.public_access]
-
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [{
-      Sid       = "PublicReadGetObject"
-      Effect    = "Allow"
-      Principal = "*"
-      Action    = "s3:GetObject"
-      Resource  = "${aws_s3_bucket.website_bucket.arn}/*"
-    }]
-  })
+  policy = data.aws_iam_policy_document.cloudfront_read.json
 }
 
 resource "aws_s3_object" "object" {
