@@ -1,4 +1,10 @@
 variable "domain_name" {
-  description = "The apex domain name for the site (e.g. example.com). A Route53 hosted zone must already exist for this domain."
   type        = string
+  description = "the domain name of your hosted zone in aws"
+}
+
+variable "site_dist_path" {
+  type        = string
+  description = "Path to the built static site directory to upload to S3"
+  default     = "../frontend/app/out"
 }
